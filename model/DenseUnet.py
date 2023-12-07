@@ -8,7 +8,7 @@ from keras.utils import plot_model
 def DenseBlock(channels,inputs):
 
     conv1_1 = Conv2D(channels, (1, 1),activation=None, padding='same')(inputs)
-    conv1_1=BatchActivate(conv1_1)
+    conv1_1 = BatchActivate(conv1_1)
     conv1_2 = Conv2D(channels//4, (3, 3), activation=None, padding='same')(conv1_1)
     conv1_2 = BatchActivate(conv1_2)
 
@@ -84,14 +84,15 @@ def DenseUNet(nClasses , input_height=640, input_width=640):
     denseunet = Model(inputs=inputs, outputs=outputs)
 
     metrics = ["accuracy", 
-               tf.keras.metrics.MeanIoU(num_classes=2),
-               tf.keras.metrics.AUC(), 
-               tf.keras.metrics.Precision(top_k=5),
-               tf.keras.metrics.Recall(top_k=5),
-               tf.keras.metrics.SensitivityAtSpecificity(0.5), 
-               tf.keras.metrics.SpecificityAtSensitivity(0.5)]
+               keras.metrics.MeanIoU(num_classes=2),
+               keras.metrics.AUC(), 
+               keras.metrics.Precision(),
+               keras.metrics.Recall(),
+               keras.metrics.SensitivityAtSpecificity(0.5), 
+               keras.metrics.SpecificityAtSensitivity(0.5)
+               ]
 
-    denseunet.compile(optimizer=Adam(lr=1e-4), 
+    denseunet.compile(optimizer=Adam(), 
                       loss='binary_crossentropy', 
                       metrics=metrics)
 
@@ -100,4 +101,4 @@ def DenseUNet(nClasses , input_height=640, input_width=640):
 if __name__ == '__main__':
     model = DenseUNet(nClasses = 1)
     model.summary()
-    plot_model(model, to_file='model/model.png', show_shapes=True, show_layer_names=True)
+    plot_model(model, to_file='model/DenseUnet.png', show_shapes=True, show_layer_names=True)
